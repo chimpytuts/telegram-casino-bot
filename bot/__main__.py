@@ -7,7 +7,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 
 from bot.config_reader import Settings
 from bot.fluent_loader import get_fluent_localization
-from bot.handlers import default_commands, spin
+from bot.handlers import default_commands, spin, spin_settings
 from bot.middlewares.throttling import ThrottlingMiddleware
 from bot.ui_commands import set_bot_commands
 
@@ -38,13 +38,18 @@ async def main():
     # Регистрация роутеров с хэндлерами
     dp.include_router(default_commands.router)
     dp.include_router(spin.router)
+    dp.include_router(spin_settings.router)
 
     # Регистрация мидлвари для троттлинга
-    dp.message.middleware(ThrottlingMiddleware(config.throttle_time_spin, config.throttle_time_other))
+    dp.message.middleware(ThrottlingMiddleware(
+        config.throttle_time_spin, 
+        config.throttle_time_other,
+        config.throttle_time_settings  # Add this line and the corresponding config
+    ))
 
     # Set bot commands in the UI
     await set_bot_commands(bot, l10n)
-
+    
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:

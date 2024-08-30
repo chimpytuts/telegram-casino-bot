@@ -48,3 +48,4 @@ menu-start = Restart Casino
 menu-spin = Show keyboard and make a spin
 menu-stop = Remove keyboard
 menu-help = Information about this bot
+menu-spin-settings = Adjust spin settings
